@@ -1,0 +1,631 @@
+\documentclass[12pt]{article}%,a4]{article}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+\setlength{\topmargin}{0in}
+\setlength{\headsep}{0in}
+\setlength{\textwidth}{6.3in}
+\setlength{\textheight}{9in}
+\def\refhg{\hangindent=20pt\hangafter=1}
+\def\refmark{\par\vskip 3mm\noindent\refhg}
+\def\refhg{\hangindent=20pt\hangafter=1}
+\def\refmark{\par\vskip 3mm\noindent\refhg}
+\def\refhg{\hangindent=20pt\hangafter=1}    %20pt
+\def\refhgb{\hangindent=10pt\hangafter=1}
+\def\refmark{\par\vskip 3mm\noindent\refhg}
+\renewcommand{\baselinestretch}{1}
+\usepackage{setspace}
+\usepackage{amssymb}
+\usepackage{amsmath,amssymb}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage[bf,small,tableposition=top]{caption}
+\usepackage{subfig}
+\usepackage{epsfig}
+\usepackage{amsthm}
+\usepackage{lineno}
+\usepackage[figuresright]{rotating}
+\usepackage{enumerate}
+\usepackage{authblk}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{lscape}
+\usepackage{mathrsfs}
+\usepackage{epstopdf}
+\usepackage{hyperref}
+\usepackage{textcomp}
+\usepackage{listings}
+\usepackage{amsmath}
+%\usepackage{mathpi}
+\usepackage{amsthm}
+\usepackage{float}
+\renewcommand{\qedsymbol}{\textcolor{black}{$\blacksquare$}}
+\usepackage{tipa}
+\usepackage{verbatim}
+\usepackage{amssymb}
+\usepackage{diagbox}
+\usepackage{multirow,bigdelim,dcolumn,booktabs}
+\newtheorem{prop}{Proposition}
+\newtheorem{thm}{Theorem}%[section]
+\newtheorem{lem}{Lemma}%[thm]{Lemma}
+\newtheorem*{Zorn}{Zorn’s Lemma}
+\theoremstyle{definition}
+\newtheorem{dfn}{Definition}
+\theoremstyle{remark}
+\newtheorem{rmk}{Remark}
+\newtheorem{res}{Result}
+\usepackage{multirow}
+\doublespacing
+
+\begin{document}
+
+	\tableofcontents 
+	\pagebreak
+	\listoftables
+	\pagebreak
+	\listoffigures
+	\pagebreak
+	\vspace{2cm}
+	\begin{center}
+		\textbf{EM Estimation for the Bivariate Mixed Gamma Regression
+			Model}
+	\end{center}
+\begin{abstract}
+	 In this paper, we present a new family of bivariate mixed Gamma regression models 
+	for taking into account the positive correlation between the cost of claims from motor third-party 
+	liability bodily injury and property damage in a versatile manner. Furthermore, we demonstrate how 
+	maximum likelihood estimation of the model parameters can be achieved via a novel Expectation- 
+	Maximization algorithm. The implementation of two members of this family, namely the Bivariate Gamma-Inverse Gaussian regression and  Bivariate Gamma-Weibull  
+	models is illustrated by a real data application which involves fitting motor insurance data from a 
+	European motor insurance company.
+\end{abstract}
+	
+
+	
+
+	
+	
+	
+	\section{Introduction}
+	Over the last few decades, there has been a vast increase in actuarial research works 
+	focusing on modelling costs of a particular claim type based on various claim severity 
+	modelling approaches such as heavy-tailed families of models, log phase-type distributions, 
+	mixture models, composite or splicing models and combinations of composite models 
+	with mixture models, see, for example, Frees and Valdez (2008), Ramirez-Cobo et al. 
+	(2010),Lee and Lin (2010), Pigeon and Denuit (2011), Scollnik and Sun (2012), Frees et al. 
+	(2014), Hürlimann (2014), Tzougas et al. (2014), Nadarajah and Bakar (2014), Bakar et al. 
+	(2015), Miljkovic and Grün (2016), Calderín-Ojeda and Kwok (2016), Reynkens et al. (2017), 
+	Tzougas et al. (2018), Tzougas et al. (2019), Laudagé et al. (2019), Grün and Miljkovic 
+	(2019), Jeong (2020), Parodi (2020), Wang et al. (2020), Tzougas and Karlis (2020) and Fung 
+	et al. (2021) among many more. However, even if the literature in the univariate setting 
+contains large number of articles, the bivariate, and/or multivariate, extensions of such models have not been 
+	explored in depth even if in non-life insurance, the actuary may often be concerned with 
+	modelling jointly different types of claims and their associated costs. 
+	In this paper, motivated by a European Motor Third Party Liability (MTPL) insurance 
+	data set, we introduce a family of bivariate mixed Gamma 
+	regression models for joint modelling the costs from positively correlated bodily injury 
+	and property damage claims in terms of covariates.
+	
+	 The proposed class of bivariate 
+	claim severity regression models is based on a mixing between two marginal Gamma 
+	distributions and a unit mean continuous and at least twice differentiable mixing density. The regression structure is employed to those parameters which are involved in the mean and dispersion of the bivariate mixed Gamma regression models. 
+	The modelling framework we consider can account for the positive dependency between the 
+	two claim types in a flexible manner since it allows for a variety of alternative distributional 
+	assumptions for the mixing density. Furthermore, depending on the choice of the mixing 
+	density the bivariate mixed Gamma model can be used to model both moderate and 
+	large bodily injury and property damage claim sizes. Finally, we develop an Expectation-Maximization (EM) type algorithm1 which 
+	takes advantage of the stochastic mixture representation of the bivariate mixed Gamma 
+	regression model for maximizing its log-likelihood in a computationally efficient and 
+	parsimonious manner. For expository purposes,bivariate Gamma-Inverse Gaussian (BGIG) and bivariate Gamma Weibull (BGW) regression models are 
+	fitted on the MTPL bodily injury and property damage data set. 
+	The rest of the paper proceeds as follows. Section 2 discusses how the bivariate mixed 
+	Gamma regression model can be constructed and the joint probability density functions 
+	(jpdfs) of the and BGIG and BGW regression models, which are used for demonstration purposes, 
+	are derived. Section 3 deals with parameter estimation for the proposed model based on the 
+	EM algorithm. In Section 4, the models presented in Section 2 are fitted to the MTPL bodily 
+	injury and property damage claims data set. Finally, concluding remarks are provided in 
+	Section 5.
+	\pagebreak
+	
+	\section{ The Bivariate mixed Gamma regression model}
+	Consider a non-life MTPL insurance which contains bodily injury and property damage claims and their are associated costs. Since it is possible that there exists a positive 
+	correlation between the two types of claims we propose the following family of models. 
+	The claim amounts of both types are denoted as $Y_i
+	, i = 1, 2,$ which are well-defined when there is at least one claim for each type of claim. Furthermore, we consider that conditional on a random effect $Z > 0$, the random variables $Y_i 	, i = 1, 2$ are independent 
+	Gamma random variables with rates $ \alpha_{i}z$. The random effect Z is a continuous random 
+	variable with density $g_{\phi_{j}}(z_j)$ where, $j=1,2,\cdot,n$ which takes positive values only and it mainly controls the 
+	variation and correlation of the whole bivariate sequence. To avoid the identifiability 
+	problem, we have to restrict the expectation $\exp [z] $  to be a fixed constant and one usually 	lets $\mathbf{E}(Z) = 1$. On the other hand, to account for the impact of heterogeneity between 	different policyholders, the rates $\alpha_i$
+	,$ i = 1, 2$ are modelled as functions of explanatory 
+	variables $ xi \in \mathbb{R}^{d_i\times1}$
+	such that $\alpha_i = \exp\{x_i^\top
+		\beta_i
+	\}$, where $d_i \in N_+ and \beta_i \in \mathbb{R}^{d_i\times1}$ are the 
+	corresponding coefficients. Then, the unconditional joint density function, $f_Y(y)$, of this 
+	bivariate sequence $Y = (Y_1,Y_2)$ is given by
+	
+	\begin{equation}
+		f_Y(y)= \int _0^{\infty }(\prod _{i=1}^2 f_{Y_{i}|z}(y,z))g_{\phi_{j}}(z_j) dZ_j
+	\end{equation}
+	\begin{equation*}
+	=\int _0^{\infty }\frac{1}{\Gamma \lambda ^2 \left(\alpha _1 \alpha _2\right){}^{\lambda } z_j^{2 \lambda }}e^{-\frac{\frac{y_1}{\alpha _1}+\frac{y_2}{\alpha _2}}{z_j}}\left(y_1 y_2\right){}^{\lambda -1}g_{\phi_{j}}(z_j) dZ_j.
+	\end{equation*}
+For $j=1,2,\cdots,n$. In the following,for demonstration purposes, we specialize with two different mixing 
+densities, the Weibull and Inverse Gaussian (IG) distributions, which lead to 
+the Bivariate Gamma-Inverse Gaussian (BGIG) and Bivariate Gamma Weibull (BGW)  regression 
+models respectively.
+
+\subsection{Bivariate Gamma-Inverse Gaussian regression model}
+
+The unit mean Inverse Gaussian (IG) density function is given by 
+
+\begin{equation}
+	g_{\phi_j}(z_j) =\frac{\phi_j }{\sqrt{2 \pi }}e^{\phi_j ^2}z_i^{-3/2}e^{\left\{\frac{1}{2} \left(z+\frac{1}{z}\right) \left(-\phi_j ^2\right)\right\}}
+\end{equation}
+The random effect Z now has a unit mean and variance $ \frac{1}{\phi_j ^2}$, To link available covariates with parameter $\phi_j$ we use log link function as $\phi_j = \exp(x_3^\top \beta_3)$
+.  The unconditional joint 
+density function of the bivariate Gamma-Inverse Gaussian (BGIG) can be derived as 
+follows
+
+\begin{equation*}
+		f_Y(y)= \int _0^{\infty }(\prod _{i=1}^2 f_{Y_{i}|z}(y,z))g_{\phi_{i}}(z_i) dz_i
+\end{equation*}
+\begin{equation*}
+	=\int _0^{\infty }\frac{1}{\Gamma \lambda ^2 \left(\alpha _1 \alpha _2\right){}^{\lambda } z_i^{2 \lambda }}e^{-\frac{\frac{y_1}{\alpha _1}+\frac{y_2}{\alpha _2}}{z_i}}\left(y_1 y_2\right){}^{\lambda -1} \times \frac{\phi_j }{\sqrt{2 \pi }}e^{\phi_j ^2}z_j^{-3/2}e^{\left\{\frac{1}{2} \left(z_j+\frac{1}{z_j}\right) \left(-\phi_j ^2\right)\right\}} dz_j
+\end{equation*}\\
+where $\alpha_i > 0$ and $\phi_j > 0$. Unfortunately, the last integral cannot be simplified but it can be computed via numerical integration.
+The mean, variance, covariance and correlation in the case of the BGIG model are given by
+\begin{equation}
+	\mathbb{E}[Y_i]=\mathbb{E}_z[\mathbb{E}[Y_i|Z_j]]=\mathbb{E}[\alpha_{i}\lambda]=\alpha_{i}\lambda
+\end{equation}
+
+\begin{align} \nonumber \label{var}
+		\mathbb{V}(Y_i)=\mathbb{E}[\mathbb{V}_y(Y_i|Z_j)]+\mathbb{V}(\mathbb{E}_z[Y_i|Z_j])\\
+		=\mathbb{E}[\lambda(\alpha_{i}Z_j)^2]+\mathbb{V}(\alpha_{i}Z_j\lambda)\\
+		=\alpha^2\lambda\bigg[\frac{\phi_j^2+1+\lambda}{\phi_j^2}\bigg]
+\end{align}
+
+\begin{align}\nonumber \label{var}
+	Cov(Y_1,Y_2)=\mathbb{E}[Cov(Y_1,Y_2|Z_j)+Cov(\mathbb{E}[Y_1|Z_j],\mathbb{E}[Y_2|Z_j])]\\
+	=0+Cov(\alpha_{1}Z\lambda,\alpha_{2}Z_j\lambda)=\frac{\alpha_{1}\alpha_{2}\lambda^2}{\phi_j^2  }
+\end{align}
+
+\begin{align}
+	Corr(Y_1,Y_2)=\frac{Cov(Y_1,Y_2)}{\sqrt{\mathbb{V}(Y_1)\mathbb{V}(Y_2)}}=\frac{\lambda}{\phi_j^2+1+\lambda}
+\end{align}
+
+
+
+
+\subsection{ Bivariate Gamma - Weibull regression model }
+The unit mean Weibull distribution having  parameter $\phi_{i}$ with  pdf given by
+\begin{equation}
+	g(z_{j};\phi_{j})=\phi_{j}.\left [\Gamma\left(1+\frac{1}{\phi_{j}}\right)\right]  e^{-\left(z_{j}\left [\Gamma(1+\frac{1}{\phi_{j}})\right]\right)^{\phi_{j}}}\left(z_{j}\left [\Gamma\left(1+\frac{1}{\phi_{j}}\right)\right]\right)^{\phi_{j}-1}
+\end{equation}
+$z_{j}>0$ and $\mathbb{E}(Z_{j})=1$ and $\mathbb{V}ar(Z_{j})=\left(\frac{1}{\left [\Gamma\left(1+\frac{1}{\phi_{j}}\right)\right]}\right)^{2}\left[\Gamma\left(1+\frac{2}{\phi_{j}}\right)-\Gamma^{2}\left(1+\frac{1}{\phi_{j}}\right)\right]$, where $j=1,2,.....,n$.To link available covariates with parameter $\phi_j$ we use log link function as $\phi_j = \exp(x_3^\top \beta_3)$ \\
+The unconditional joint density function of the bivariate Gamma Weibull (BGW) can be derived as follows
+\begin{equation*}
+	f_Y(y)= \int _0^{\infty }(\prod _{i=1}^2 f_{Y_{i}|z}(y,z))g_{(z_j);\phi_{j}} dz_j
+\end{equation*}
+\small
+\begin{equation*}
+		=\int _0^{\infty }\frac{1}{\Gamma \lambda ^2 \left(\alpha _1 \alpha _2\right){}^{\lambda } z_i^{2 \lambda }}e^{-\frac{\frac{y_1}{\alpha _1}+\frac{y_2}{\alpha _2}}{z_i}}\left(y_1 y_2\right){}^{\lambda -1}\times\phi_{j}.\left [\Gamma\left(1+\frac{1}{\phi_{j}}\right)\right]  e^{-\left(z_{j}\left [\Gamma(1+\frac{1}{\phi_{j}})\right]\right)^{\phi_{j}}}\left(z_{j}\left [\Gamma\left(1+\frac{1}{\phi_{j}}\right)\right]\right)^{\phi_{j}-1} dz_j
+\end{equation*}\\
+where $\alpha_i >0 $ and $\phi_j >0$. Unfortunately ,the last integral cannot be simplifed but it can be computed via numerical integration. 
+The mean, variance, covariance and correlation in the case of the BGW model are given by
+
+\begin{equation}
+	\mathbb{E}[Y_i]=\mathbb{E}_z[\mathbb{E}[Y_i|Z_j]]=\mathbb{E}[\alpha_{i}\lambda]=\alpha_{i}\lambda
+\end{equation}
+
+\begin{align} \nonumber \label{var}
+	\mathbb{V}(Y_i)=\mathbb{E}[\mathbb{V}_y(Y_i|Z_j)]+\mathbb{V}(\mathbb{E}_z[Y_i|Z_j])\\
+	=\mathbb{E}[\lambda(\alpha_{i}Z_j)^2]+\mathbb{V}(\alpha_{i}Z_j\lambda)\\
+	=\frac{\alpha ^2 \lambda  \left(-(\lambda +1) \Gamma \left(\frac{1}{\phi_j }\right)^2+2 (\lambda +1) \phi_j  \Gamma \left(\frac{2}{\phi_j }\right)+(\phi_j +1)^2\right)}{(\phi_j +1)^2}
+\end{align}
+
+\begin{align}\nonumber \label{var}
+	Cov(Y_1,Y_2)=\mathbb{E}[Cov(Y_1,Y_2|Z_j)+Cov(\mathbb{E}[Y_1|Z_j],\mathbb{E}[Y_2|Z_j])]\\
+	=0+Cov(\alpha_{1}Z_j\lambda,\alpha_{2}Z_j\lambda)=\frac{\alpha _1 \alpha _2 \lambda ^2 \left(2 \phi_j  \Gamma \left(\frac{2}{\phi_j }\right)-\Gamma \left(\frac{1}{\phi_j }\right)^2\right)}{(\phi_j +1)^2}
+\end{align}
+
+\begin{align}
+	Corr(Y_1,Y_2)=\frac{Cov(Y_1,Y_2)}{\sqrt{\mathbb{V}(Y_1)\mathbb{V}(Y_2)}}=\frac{\lambda  \left(2 \phi_j  \Gamma \left(\frac{2}{\phi_j }\right)-\Gamma \left(\frac{1}{\phi_j }\right)^2\right)}{\sqrt{\left(-(\lambda +1) \Gamma \left(\frac{1}{\phi_j }\right)^2+2 (\lambda +1) \phi_j  \Gamma \left(\frac{2}{\phi_j }\right)+(\phi_j +1)^2\right)^2}}
+\end{align}
+\pagebreak
+
+
+
+
+
+\section{ The EM algorithm for the bivariate mixed Gamma regression model} 
+
+In this Section, an Expectation-Maximization (EM) algorithm is applied to facilitate the 
+maximization likelihood estimation of the bivariate mixed Gamma regression model. 
+Consider the observed bivariate response sequence ${Yj}j=1,...,n$ and the corresponding 
+covariates $\{x_1,j\}_{j=1,...,n}$ and $\{x_2,j\}_{j=1,...,n}.$ Also, let $\Theta= \{\beta_1
+	, \beta_2
+	, \beta_3\}$ be the parameter space 
+for this model. Then, the log-likelihood function can be written as 
+
+\begin{equation*}
+	l(\Theta)=\sum _{j=1}^2 log\bigg(\int _0^{\infty }\frac{1}{\Gamma \lambda ^2 \left(\alpha _1 \alpha _2\right){}^{\lambda } z_j^{2 \lambda }}e^{-\frac{\frac{y_1}{\alpha _1}+\frac{y_2}{\alpha _2}}{z_j}}\left(y_1 y_2\right){}^{\lambda -1}g_{\phi_{j}}(z_j) dZ_j\bigg)
+\end{equation*}\\
+The direct maximization of the above  Equation  with respect to parameter space $\Theta$ is complicated. Fortunately, in such cases, the EM algorithm can be used to simplified the maximization problem for the above  Equation . In particular, if we augment the unobserved variable 
+$\{Z_j\}_{j=1,...,n}$, then the complete log-likelihood function is given by
+\begin{equation*}
+	l_c(\Theta)=\sum _{i=1}^2\sum _{j=1}^n\bigg( -\lambda\log(\alpha_{i,j})-2\lambda \log(z_j)-2\log\Gamma\lambda-\frac{y_{ij}}{\alpha_{ij}z_j }+(\lambda-1) \log(y_{ij})\bigg)+\sum _{j=1}^n\log(g_{\phi_j}(z_j))
+\end{equation*}\\
+The two-steps of EM algorithm are described in what follows.\\
+
+
+$\bold{E-step:}$  The Q-function, $Q(\Theta; \Theta ^{(r)}
+)$, which is the conditional posterior expectation of 
+Equation , is given by 
+\small{
+\begin{align}\nonumber
+	Q(\Theta; \Theta ^{(r)})=\sum _{i=1}^2\sum _{j=1}^n\bigg( -\lambda\log(\alpha_{i,j})-2\lambda\mathbb{E}_{z_{i,j}}^{(r)} [\log(z_j)]-2\log\Gamma\lambda-\frac{y_{ij}}{\alpha_{ij}}\mathbb{E}_{z_{i,j}}^{(r)}[z_j^{-1}]\\ +(\lambda-1) \log(y_{ij})\bigg)+\sum _{j=1}^n\mathbb{E}_{z_{i,j}}^{(r)}[\log(g_{\phi_j}(z_j))]
+\end{align}
+
+
+%	Q(\Theta; \Theta ^{(r)})=\sum _{i=1}^2\sum _{j=1}^n\bigg( -\lambda\log(\alpha_{i,j})-2\lambda\mathbb{E}_{z_{i,j}}^{(r)} [\log(z_j)]-2\log\Gamma\lambda-\frac{y_{ij}}{\alpha_{ij}}\mathbb{E}_{z_{i,j}}^{(r)}[z_j^{-1}] +(\lambda-1) \log(y_{ij})\bigg)+\sum _{j=1}^n\mathbb{E}_{z_{i,j}}^{(r)}[\log(g_{\phi_j}(z_j))]
+%\end{}}
+Where $\alpha_{i,j} ^{(r)}$=$ \exp\{x_{i,j}^\top
+\beta_i^{(r)}
+\}$ and where the conditional expectation $\mathbb{E}_{z_{j}}^{(r)}$ $[h(z)]$ for any real function ,$h(.)$ ,is defined as follows
+
+\begin{equation*}
+	\mathbb{E}_{z_{j}}^{(r)}=\mathbb{E}[h(z_j)|\Theta^{(r)},y_j,x_{1,j},x_{2,j}]=\int _0^{\infty } h(z_j)\pi(z|\Theta^{(r)},y_j,x_{1,j},x_{2,j})dz_j
+\end{equation*}\\
+ $\bold{M-step:}$ After calculating the Q- function, we find its maximum global point,$\Theta^{(j+1)}$
+, i.e. 
+we update the parameters by computing the gradient function, g(.), and the Hessian 
+matrix, H(.), of the Q-function. In particular, the Newton-Raphson algorithm is used 
+for maximizing the Q-function and the parameters $\beta_1$,$\beta_2$,$\beta_3$
+for the Gamma part and 
+the parameter $\lambda$\ for the randnom effect part are updated separately as shown below.\\
+- For the Gamma part, \\
+
+\begin{equation*}
+   \beta_i^{(r+1)}=\beta_i^{(r)} - H^{-1}(\beta_i^{(r)})g(\beta_i^{(r)}),\hspace{0.25cm}  i=1,2
+\end{equation*}
+\begin{equation*}
+	g(\beta_i^{(r)})= X_i^{\top}V_i  \hspace{1cm} H(\beta_i^{(r)})= X_i^{\top}D_iX_i
+\end{equation*}
+\begin{equation*}
+	V_i= \bigg(\bigg\{\frac{y_{i,j}}{\alpha_{i,j}^{(r)} }\mathbb{E}_{z_{i,j}}^{(r)}[z^{(-1)}]-\lambda\bigg\}_{j=1,...,n}\bigg)
+\end{equation*}
+\begin{equation*}
+		D_i= diag\bigg(\bigg\{-\frac{y_{i,j}}{\alpha_{i,j}^{(r)} }\mathbb{E}_{z_{i,j}}^{(r)}[z^{(-1)}]\bigg\}_{j=1,...,n}\bigg),
+\end{equation*}\\
+where $X_i = (x_i,1, . . . , x_{i,n})$ is the design matrix for $\alpha_{i,j}^{(r)}$.
+For $\lambda$,we derive the first and second order deratives of $\lambda$ and then we take the gradient function and the Hessian Matrix.Finally we update $\lambda$ by using the one-step Newton-Raphson.
+\begin{equation}
+	\lambda^{(r+1)}=\lambda^{(r)}-\frac{h(\lambda^{(r)})}{H(\lambda^{(r)})}
+\end{equation}
+where,
+\begin{equation*}
+h(\lambda^{(r)})	=-\sum _{i=1}^2\sum _{j=1}^n\lambda_{ij}^{(r)}-4n\psi^{(0)}(\lambda^{(r)})-4\sum _{j=1}^n\mathbb{E}^{(r)}(\log Z_i)+\sum _{i=1}^2\sum _{j=1}^n\log y_{ij}
+\end{equation*}
+\begin{equation*}
+	H(\lambda6{(r)})=-4n\psi^{(1)}(\lambda^{(r)})
+\end{equation*}
+We can improve the estimates of $\lambda$ using (5).
+
+
+. 
+\subsection{The EM algorithm for ML estimation of the Gamma-Inverse Gaussian regression model}
+The task of obtaining maximum likelihood estimates of the parameters of the model Pareto-Inverse Gaussian is carried out using EM algorithm. The joint log-likelihood function of the complete data can be written as follows,
+\begin{multline}
+	l_{c}(\mathbf{\Theta})=\sum_{j=1}^{n}\left(\log(\alpha_{j})+\alpha_{j}.\log(z_{j})-(\alpha_{j}+1).\log(y_{j})\right)\\
+	\quad \quad + \sum_{j=1}^{n} \left(\log(\phi_{j})+\phi_{j}^{2}-\frac{3}{2}\log(z_{j})-\frac{\phi_{j}^{2}.\left(\frac{1}{z_{j}}+z_{j}\right)}{2}\right)
+	\label{lle}
+\end{multline}
+where $\phi^{(r)}_{j}=\exp(\mathbf{x}_{2,j}^{\top}\boldsymbol{\beta_{3}^{(r)}})$.\\
+The M-steps required conditional expectation for the terms $\log(z_{j})$ and $\left(1-\frac{1}{2}\left(\frac{1}{z_{j}}+z_{j}\right)\right)$. Hence the algorithm can be written as
+\begin{itemize}
+	\item \textbf{E-step:} The conditional expectation can be computed as
+	\begin{equation*}
+		t_{j}=\mathbb{E}_{Z_{j}}\left(\log(Z_{j})|y_{j};\mathbf{\Theta}^{(r)}\right)
+	\end{equation*}
+	\begin{equation}
+		t_{j}=\frac{\int_0^y \log(z_{j}) \frac{\alpha_{j}^{(r)} z_{j}^{\alpha_{j}^{(r)}} }{y_{j}^{\alpha_{j}^{(r)} +1}} \frac{\phi_{j}^{(r)} \text{exp}\left({\left(1-\frac{1}{2} \left(z_{j}+\frac{1}{z_{j}}\right)\right) (\phi_{j}^{(r)})^2}\right)}{\sqrt{2 \pi } z_{j}^{3/2}} dz_{j}}{\int_0^y  \frac{\alpha_{j}^{(r)} z_{j}^{\alpha_{j}^{(r)}} }{y_{j}^{\alpha_{j}^{(r)} +1}} \frac{\phi_{ij}^{(r)} \text{exp}\left({\left(1-\frac{1}{2} \left(z_{j}+\frac{1}{z_{j}}\right)\right) (\phi_{j}^{(r)}) ^2}\right)}{\sqrt{2 \pi } z_{j}^{3/2}} dz_{j}}
+	\end{equation}
+	
+	and
+	\begin{equation*}
+		d_{j}=\mathbb{E}_{Z_{j}}\left(1-\frac{1}{2}\left(\frac{1}{z_{j}}+z_{j}\right)|y_{j};\mathbf{\Theta}^{(r)}\right)
+	\end{equation*}
+	\begin{equation}
+		d_{j}=\frac{\int_0^y \left(1-\frac{1}{2}\left(\frac{1}{z_{j}}+z_{j}\right)\right) \frac{\alpha_{j}^{(r)} z_{j}^{\alpha_{j}^{(r)}} }{y_{j}^{\alpha_{j}^{(r)} +1}} \frac{\phi_{j}^{(r)} \text{exp}\left({\left(1-\frac{1}{2} \left(z_{j}+\frac{1}{z_{j}}\right)\right) (\phi_{j}^{(r)})^2}\right)}{\sqrt{2 \pi } z_{j}^{3/2}} dz_{j}}{\int_0^y  \frac{\alpha_{j}^{(r)} z_{j}^{\alpha_{j}^{(r)}} }{y_{j}^{\alpha_{j}^{(r)} +1}} \frac{\phi_{j}^{(r)} \text{exp}\left({\left(1-\frac{1}{2} \left(z_{j}+\frac{1}{z_{j}}\right)\right) (\phi_{j}^{(r)}) ^2}\right)}{\sqrt{2 \pi } z_{j}^{3/2}} dz_{j}}
+	\end{equation}
+	
+	
+	\item \textbf{M-step:}
+	
+	\begin{equation}
+		h_{2}(\boldsymbol{\beta_{3}})=\left(1+2\phi^{(r)}_{j}d_{j}\right) x_{2,jk}
+	\end{equation}  
+	
+	and
+	\begin{equation}
+		H_{2}(\boldsymbol{\beta_{3}})=\left(4\phi^{(r)}_{j}d_{j}\right) x_{2,jk}x_{2,jk}^{\top}=\textbf{X}_{3}^{\top}\textbf{D}_{3}\textbf{X}_{3}
+	\end{equation}  
+	where $j=1,2, \cdots,n$, $k=1,2, \cdots,p_{2}$ and $\textbf{D}_{3}=diag\{4\phi^{(r)}_{j}d_{j}\}$.
+	Equation (\ref{beta3}) can be used to improve the estimates of $\boldsymbol{\beta_{3}^{(r)}}$.
+	
+	\item Finally, iterate between the E-step and the M-step until some convergence criterion is satisfied, for example the relative change in log-likelihood between two successive iterations is smaller than $10^{-12}$.
+\end{itemize}
+\subsection{EM algorithm for ML estimation of Gamma-Weibull regression model}
+Due to the complex structure of density function of the Weibull model, direct maximization of the log-likelihood through usual way will not result into efficient estimates of the parameters of the model. An EM algorithm can be used to efficiently compute the estimates of the various parameter of the Weibull model as follows\\
+The complete data log-likelihood takes the form
+\begin{multline}
+	l_{c}(\theta)=\sum_{j=1}^{n}\left[\log(\alpha_{j})+\alpha_{j}.\log(z_{j})-(\alpha_{j}+1).\log(y_{j})\right]\\
+	\quad \quad + \sum_{j=1}^{n} \left[\log(\phi_{j})+\log\left(\Gamma\left(1+\frac{1}{\phi_{j}}\right)\right)+(\phi_{j}-1).\left(\log(z_{j})+\log\left(\Gamma\left(1+\frac{1}{\phi_{j}}\right)\right)\right)-z_{j}.\Gamma\left(1+\frac{1}{\phi_{j}}\right)\right]
+\end{multline}
+where $\phi^{(r)}_{j}=\exp(\mathbf{x}_{2,j}^{\top}\boldsymbol{\beta_{3}^{(r)}})$.\\
+The expectation of $\log(z_{j})$ and $z_{j}$ are needed for the process of M-step. The EM algorithm can be written as
+
+\begin{itemize}
+	\item E-step: The required expectations for $j=1,2...n$ can be computed as
+	\begin{equation*}
+		t_{j}=\mathbb{E}_{Z_{j}}\left[\log(Z_{j})|y_{j};\theta^{(r)}\right]
+	\end{equation*}
+	\begin{equation}
+		t_{j}=\frac{\int_0^y \log(z_{j}) \frac{\alpha_{j}^{(r)} z_{j}^{\alpha_{j}^{(r)}} }{y_{j}^{\alpha_{j}^{(r)} +1}}.\phi^{(r)}_{j}.\left [\Gamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right]  e^{-\left(z_{j}\left [\Gamma(1+\frac{1}{\phi^{(r)}_{j}})\right]\right)^{\phi^{(r)}_{j}}}\left(z_{j}\left [\Gamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right]\right)^{\phi^{(r)}_{j}-1} dz_{j}}{\int_0^y  \frac{\alpha_{j}^{(r)} z_{j}^{\alpha_{j}^{(r)}} }{y_{j}^{\alpha_{j}^{(r)} +1}}.\phi^{(r)}_{j}.\left [\Gamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right]  e^{-\left(z_{j}\left [\Gamma(1+\frac{1}{\phi^{(r)}_{j}})\right]\right)^{\phi^{(r)}_{j}}}\left(z_{j}\left [\Gamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right]\right)^{\phi^{(r)}_{j}-1} dz_{j}}
+	\end{equation}
+	and
+	\begin{equation*}
+		d_{j}=\mathbb{E}_{Z_{j}}\left[Z_{j}|y_{j};\theta^{(r)}\right]
+	\end{equation*}
+	\begin{equation}
+		d_{j}=\frac{\int_0^y (z_{j}) \frac{\alpha_{j}^{(r)} z_{j}^{\alpha_{j}^{(r)}} }{y_{j}^{\alpha_{j}^{(r)} +1}}.\phi^{(r)}_{j}.\left [\Gamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right]  e^{-\left(z_{j}\left [\Gamma(1+\frac{1}{\phi^{(r)}_{j}})\right]\right)^{\phi^{(r)}_{j}}}\left(z_{j}\left [\Gamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right]\right)^{\phi^{(r)}_{j}-1} dz_{j}}{\int_0^y  \frac{\alpha_{j}^{(r)} z_{j}^{\alpha_{j}^{(r)}} }{y_{j}^{\alpha_{j}^{(r)} +1}}.\phi^{(r)}_{j}.\left [\Gamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right]  e^{-\left(z_{j}\left [\Gamma(1+\frac{1}{\phi^{(r)}_{j}})\right]\right)^{\phi^{(r)}_{j}}}\left(z_{j}\left [\Gamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right]\right)^{\phi^{(r)}_{j}-1} dz_{j}}
+	\end{equation}
+	where $\phi^{(r)}_{j}=\text{exp}(\text{x}_{2}^{\top}\beta_{2}^{(r)})$.\\
+	The closed form expressions for the above expectations are not easily available hence numerical approximations are required to compute above mentioned quantities.
+	
+	\item M-step: Using the numerical approximate value of $t_{j}$, update the regression parameters $\beta_{1}$. Update the regression parameters $\beta_{2}$ using the approximate values of $t_{j}$ and $d_{j}$, the Newton-Raphson algorithm to improve the estimates of regression parameters given as\\
+	
+	
+	\begin{align} \nonumber
+		&h_{2}(\beta_{3})=\left[1+\left(\left(1-\Gamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right)^{\phi^{(r)}_{j}}.d_{i}^{\phi^{(r)}_{j}}\right)\left(\phi^{(r)}_{j}.\log\left(\Gamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right)-\digamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right) \right. \right. \right.\\
+		& \left. \left. \left. +\phi^{(r)}_{j}.t_{j}\right)\right)\right] \mathbf{x}_{2,jk}
+	\end{align}
+	
+	
+	
+	
+	
+	\begin{equation}
+		H_{2}(\beta_{3})=\left[A_1 + A_2 + A_3 + A_4 + A_5\right]\mathbf{x}_{2,jk}\mathbf{x}_{3,jk}^{\top} = X_{3}^{\top}D_{3}X_{3}
+	\end{equation}
+	where $j=1,2,3,...n$ and $k=1,2,3....p_{2}$. The matrix $D_{3}$ can be written as $D_{3}=diag\{ A_1 + A_2 + A_3 + A_4 + A_5  \}$.\\
+	Where $A_1=\phi^{(r)}_{j} \text{log}(\Gamma(1+\frac{1}{\phi^{(r)}_{j}}))-\Psi^{(0)}(1+\frac{1}{\phi^{(r)}_{j}})$, $A_2=\frac{\Psi^{(1)}\left(1+\frac{1}{\phi^{(r)}_{j}}\right)}{\phi^{(r)}_{j}}$, $A_3=\phi^{(r)}_{j} \text{log}(z_{j})$, $A_4=\text{log}(z_{j})\left[1+\phi^{(r)}_{j}.\text{log}(z_{j})+\phi^{(r)}_{j}.\text{log}(\Gamma(1+\frac{1}{\phi^{(r)}_{j}}))-\Psi^{(0)}(1+\frac{1}{\phi^{(r)}_{j}})\right].z_{j}^{\phi^{(r)}_{j}}\left(\Gamma(1+\frac{1}{\phi^{(r)}_{j}})\right).\phi^{(r)}_{j}$ and $A_5=z_{j}^{\phi^{(r)}_{j}}.\left(\Gamma(1+\frac{1}{\phi^{(r)}_{j}})\right)\left[\left(\phi^{(r)}_{j}\right)^{2}.\text{log}\left(\Gamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right)\left(1+\phi^{(r)}_{j}.\text{log}(z_{j})+\phi^{(r)}_{j}.\text{log}\left(\Gamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right)\right)- \phi^{(r)}_{j}\left(1+ \phi^{(r)}_{j}. \text{log}(z_{j})+2\phi^{(r)}_{j}.\text{log}\left(\Gamma\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right)\right).\Psi^{(0)}\left(1+\frac{1}{\phi^{(r)}_{j}}\right)+\phi^{(r)}_{j}\left(\Psi^{(0)}\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right)^{2}+\Psi^{(1)}\left(1+\frac{1}{\phi^{(r)}_{j}}\right)\right]  $
+	The improved estimates of $\beta_{3}^{(r)}$ can be obtained using Newton-Raphson mathod.
+	
+	\item Finally, iterate between the E-step and the M-step until some convergence criterion is satisfied, for example the relative change in log-likelihood between two successive iterations is smaller than $10^{-12}$.
+	
+\end{itemize}  
+\pagebreak
+
+\section{ Empirical Analysis}
+The study is based on data from automobile policies from a major insurance European 
+company for the underwriting years 2012 - 2019. This data set contains bodily injury (BI) 
+and property damage (PD) claims and their associated claim costs, denoted by $Y_1$ and 
+$Y_2$ respectively, and risk factors that affect both $Y_1$ and $Y_2$. There were 7263 observations in total which met our criteria of having at least one claim made
+The summary statistics for $Y_1$ and $Y_2$ are shown in Table 1 and Figure 1. As it was 
+expected, both $Y_1$ and $Y_2$ are positively skewed. Also, the Pearson correlation test indicates 
+that it is appropriate to model both types of claim costs based on a single bivariate model 
+rather than two independent univariate models.\\
+
+
+\begin{table}[H]
+	\begin{center}
+		\caption{ Summary statisitcs of two types of d claim amount. The correlation test is an one-sided test,
+			where the alternative hypothesis is ’true correlation is greater than 0’.}
+		\label{tab:Table1.}
+		\footnotesize{
+		\begin{tabular}{cccccccc} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
+			\hline
+			\textbf{Aggregated Claim} & \textbf{min} & \textbf{median}& \textbf{mean}& \textbf{max}&\textbf{standard deviation}& \textbf{correlation}&\textbf{p-value} \\
+			\hline
+			$Y_1$ &  0.9& 2413.4& 11017.3& 251958.2& 27128.85&\multirow{2}{*}{0.1095}&\multirow{2}{*}{0.0000}\\
+			$Y_2$ & 6.2& 1012.4& 1871.2& 14818.2& 2217.138 & \\
+		\hline
+		\end{tabular}}
+	\end{center}
+\end{table}
+\begin{figure}[htp]
+	\centering
+	\includegraphics[width=6.5cm]{bi}
+	\includegraphics[width=6.5cm]{pd}
+	\caption{ Empirical distribution of two types of d claim amount}
+\end{figure}
+Furthermore, a description of the explanatory variables which we included in the 144
+regression analysis for Y1 and Y2 is provided below.\\ 
+• The variable Driver’s age. Policyholders aged 18 to 90 years old.\\ 
+• The variable Vehicle’s age. Vehicles aged 0 to 60 years old. \\
+• The variable Car cubism, ’CC’, consists of four categories. Vehicles with horse power 
+’0-1299 cc’ (C1), ’1300 -1399 cc’ (C2), ’1400 - 1599 cc’ and ’ greater or equal 1600 cc’ (C3).\\ 
+• The variable ’PT’ consisted of three types of policy, ’Economic type which includes 
+only MTPL coverage’ (C1) , ’Middle type which includes apart from MTPL coverage 
+other types of coverage’ (C2), and ’Expensive type – Own coverage’ (C3)\\ 
+• The variable ’Region’ consisted of three board regions, ’Captial city’(C1), ’province 
+cities of the mainland’(C2), and ’province cities of the island area’ (C3) \\
+
+Additionally, the empirical distributions of the categorical and continuous explanatory 
+variables are shown in Table 2 and Figure 2 respectively. The BPA and BEIG regression 
+models were fitted to the claim costs $Y = (Y_1, Y_2)$. All computing was done using the $\bold{R}$ 
+software. The vector of parameters$ \Theta = \{\beta_{1}
+	, \beta_{2}
+	, \beta_{3}\}$ was estimated using the EM algorithm 
+which was presented in Section 3 and their standard deviations weree obtained through 
+expressions that were directly produced by the EM algorithm for the observed information 
+matrix of each model. Finally, the fit of the competing models was compared by employing\\\\
+
+
+\begin{table}[H]
+	\begin{center}
+		\caption{ Empirical distributions of categorical variables}
+		\label{tab:Table2.}
+		\scalebox{0.8}{
+			\begin{tabular}{cccc} % <-- Alignments: 1st column left, 2nd middle and 3rd right, with vertical lines in between
+				\hline
+				 & \textbf{Horse power(CC)} & \textbf{Policy Type(PT)}& \textbf{Region}\\
+				\hline
+				C1&  2036& 1144& 4220\\
+				C2&2417& 1940 &2333\\
+				C3&1833& 4179 &710\\
+				C4&977 &- &-\\
+				\hline
+		\end{tabular}}
+	\end{center}
+\end{table}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=8cm]{DA.jpg} \hspace{0.2cm}
+	\includegraphics[width=8cm]{VA.jpg}
+	\caption{  Empirical distributions of continuous explanatory variables}
+	
+\end{figure}
+
+
+
+\begin{table}[H]
+\begin{center}
+	\caption{ Estimated parameters and standard errors in parentheses for the BGIG and BGW  regressions
+		model. AIC: Akaike information criterion; BIC: Bayesian information criterion}
+	
+	\label{tab:table3}
+	\def\arraystretch{2}
+	\scalebox{0.82}{
+	\begin{tabular}{l|c|c}
+		\hline \hline
+		\textbf{} & \textbf{BGIG} & \textbf{BGW}\\
+		
+		\hline \hline
+		Response & $\beta_1$ $\hspace{1.5cm}$ $\beta_2$ $\hspace{1.5cm}$ $\beta_3$&  $\beta_1$ $\hspace{1.5cm}$ $\beta_2$ $\hspace{1.5cm}$ $\beta_3$\\
+	    \hline \hline
+		Intercept &8.0395 $\hspace{1cm}$ 7.7080$\hspace{1cm}$-0.9201 &8.1177$\hspace{1cm}$7.5724$\hspace{1cm}$0.4663 \\
+	
+		Driver's Age & -0.0002$\hspace{1cm}$0.0012$\hspace{1cm}$0.0022  &0.0013$\hspace{1cm}$0.0003$\hspace{1cm}$0.0076 \\
+		CC:C2 & -0.0009$\hspace{1cm}$0.1945$\hspace{1cm}$-0.0892 &-0.0505$\hspace{1cm}$0.1706$\hspace{1cm}$-0.2686\\
+		CC:C3 &0.0489$\hspace{1cm}$0.0487$\hspace{1cm}$ 0.0098 &0.0285$\hspace{1cm}$0.0708$\hspace{1cm}$-0.1824 \\
+    	CC:C4 &0.0489$\hspace{1cm}$0.0487$\hspace{1cm}$ 0.0098 &0.0022$\hspace{1cm}$0.1727$\hspace{1cm}$-0.2971 \\
+		PT:C2 &0.6450$\hspace{1cm}$0.1864 $\hspace{1cm}$-0.0763 &0.3705$\hspace{1cm}$-0.4283$\hspace{1cm}$1.3525\\
+		PT:C3 &0.1801$\hspace{1cm}$-0.4467$\hspace{1cm}$0.3701  &0.2879$\hspace{1cm}$-0.2617$\hspace{1cm}$0.3226 \\
+		Vehicle's Age& 0.2309$\hspace{1cm}$-0.3615$\hspace{1cm}$0.2449 & 0.0124$\hspace{1cm}$-0.0110$\hspace{1cm}$0.0323\\
+		Region:C2 &0.0088$\hspace{1cm}$-0.0115$\hspace{1cm}$ 0.0105 &-0.1029$\hspace{1cm}$0.1771$\hspace{1cm}$-0.3498 \\
+		Region:C3 & 0.1976$\hspace{1cm}$-0.1137$\hspace{1cm}$0.1175 &0.2428$\hspace{1cm}$-0.1237$\hspace{1cm}$0.4724 \\
+		\hline
+		AIC& \textbf{275811.22}& \textbf{273941.22} \\
+		BIC&\textbf{275868.88} & \textbf{273998.88}\\
+		\hline \hline
+	\end{tabular}}
+\end{center}
+\end{table}
+\vspace{1cm}
+\pagebreak
+
+\section{ Concluding Remarks}
+In this paper, we developed a class of bivariate mixed Gamma regression models 
+which can approximate moderate and large claim costs in an efficient manner based on 
+the choice of mixing density. We illustrated our approach by fitting the BGW and BGIG 
+regression models on MTPL data which were provided by a European insurance company. 
+The proposed family of models can accommodate the positive correlation between MTPL 
+bodily injury and property damage claims and their associated costs, when explanatory 
+variables for each type of claims are taken into account through regression structure for 
+their mean as well as dispersion parameters. 
+The main achievement is that we developed an EM-type algorithm which computa- 
+tionally efficient. This was demonstrated by obtaining reliable estimates when applying the 
+models to the real data. Here we put the covariates in $\alpha_{i}$ which is a part of mean and also in $\phi_j$ which is a part of dispersion for getting better results. The BGW regression  model provides good fit as compare to BGIG regression model for the MTPL dataset \\\\
+
+\section*{Abbreviations} 
+The following abbreviations are used in this work
+
+\begin{flushleft}
+	BGW$\hspace{0.8cm}$ Bivariate Gamma Weibull\\
+	BGIG$\hspace{0.8cm}$ Bivariate Gamma- Inverse Gaussian\\
+	EM $\hspace{1cm}$ Expectation-Maximization\\
+	IG$\hspace{1.3cm}$ Inverse Gaussian\\
+	
+\end{flushleft}
+
+
+\pagebreak
+	
+\begin{thebibliography}{}
+	
+	\bibitem{}Bakar, SA Abu, Nor A Hamzah, Mastoureh Maghsoudi, and Saralees Nadarajah. (2015). Modeling loss data using composite models.\textit{ Insurance: Mathematics and Economics }61, 146–154.
+	
+	\bibitem{} Calderín-Ojeda, Enrique and Chun Fung Kwok. (2016). Modeling claims data with composite Stoppa models. \textit{Scandinavian Actuarial Journal }(2016)(9), 817–836.
+	
+	\bibitem{} Chen, Z., Dassios, A., \& Tzougas, G. (2022). EM Estimation for the Bivariate Mixed Exponential Regression Model. \textit{Risks}, 10(5), 105.
+	
+	\bibitem{}Frees, Edward W, Richard A Derrig, and Glenn Meyers. (2014). Predictive modeling applications in actuarial science, Volume 1. \textit{Cambridge University Press}.
+	
+	\bibitem{}Frees, E. W. and E. A. Valdez. (2008). Hierarchical insurance claims modelling. \textit{Journal of the American 
+		Statistical Association}. 
+	
+	\bibitem{}Fung, Tsz Chai, Andrei L. Badescu, and X. Sheldon Lin. (2021). A new class of severity regression models 
+	with an application to ibnr prediction. \textit{North American Actuarial Journal} 25(2), 206–231. 
+	
+	\bibitem{}Grün, Bettina and Tatjana Miljkovic. (2019). Extending composite loss models using a general framework 201
+	of advanced computational tools. \textit{Scandinavian Actuarial Journal} (2019)(8), 642–660. 
+	
+	\bibitem{}Hürlimann, Werner. (2014). Pareto type distributions and excess-of-loss reinsurance. \textit{International Journal 
+		of Research and Reviews in Applied Sciences} 18(3), 1. 
+	
+	\bibitem{}Jeong, Himchan. (2020). Testing for random effects in compound risk models via Bregman divergence. 205
+	\textit{ASTIN Bulletin: The Journal of the IAA 50(3)}, 777–798. 
+	
+	\bibitem{}Laudagé, Christian, Sascha Desmettre, and Jörg Wenzel. (2019). Severity modeling of extreme insurance 
+	claims for tariffication. \textit{Insurance: Mathematics and Economics} 88, 77–92.
+	
+	\bibitem{}Version March 29, (2022) submitted to Risks 10 of 10
+	Lee, Simon CK and X. Shelson Lin. 2010. Modeling and evaluating insurance losses via mixtures of 
+	\textit{Erlang distributions. North American Actuarial Journal} 14(1), 107–130.
+	
+	\bibitem{}Miljkovic, Tatjana and Bettina Grün. (2016). Modeling loss data using mixtures of distributions. \textit{Insurance: 
+		Mathematics and Economics} 70, 387 – 396. doi:https://doi.org/10.1016/j.insmatheco.2016.06.019.
+	
+	\bibitem{}Nadarajah, Saralees and SA Abu Bakar. (2014). New composite models for the Danish fire insurance data. 
+	\textit{Scandinavian Actuarial Journal} 2014(2), 180–187. 
+	
+	\bibitem{}Parodi, Pietro. (2020). A generalised property exposure rating framework that incorporates scale- 
+	independent losses and maximum possible loss uncertainty.\textit{ Astin Bulletin} 50(2), 513–553.
+	
+	\bibitem{}Pigeon, Mathieu and Michel Denuit. (2011). Composite lognormal-Pareto model with random threshold. 
+	\textit{Scandinavian Actuarial Journal} (2011)(3), 177–192. 
+	
+	\bibitem{}Ramirez-Cobo, Pepa, Rosa E Lillo, Simon Wilson, Michael P Wiper, et al. (2010). Bayesian inference for 
+	double pareto lognormal queues. \textit{The Annals of Applied Statistics} 4(3), 1533–1557. 
+	
+	\bibitem{}Reynkens, Tom, Roel Verbelen, Jan Beirlant, and Katrien Antonio. (2017). Modelling censored losses 
+	using splicing: A global fit strategy with mixed Erlang and extreme value distributions. \textit{Insurance: 
+		Mathematics and Economics} 77, 65–77.
+	
+	\bibitem{}Scollnik, David PM and Chenchen Sun. (2012). Modeling with Weibull-Pareto models. \textit{North American 
+		Actuarial Journal} 16(2), 260–272. 
+	
+	\bibitem{}Tzougas, George and Dimitris Karlis. (2020). An em algorithm for fitting a new class of mixed exponential 226
+	regression models with varying dispersion. \textit{Astin Bulletin}. 
+	
+	\bibitem{}Tzougas, George, Spyridon Vrontos, and Nicholas Frangos. (2014). Optimal bonus-malus systems using 
+	finite mixture models. \textit{Astin Bulletin} 44(2), 417–444. 
+	
+	\bibitem{}Tzougas, George, Spyridon Vrontos, and Nicholas Frangos. (2018). Bonus-malus systems with two- 
+	component mixture models arising from different parametric families. \textit{North American Actuarial 
+		Journal} 22(1), 55–91.
+	
+	\bibitem{}Tzougas, George, Woo Hee Yik, and Muhammad Waqar Mustaqeem. (2019). Insurance ratemaking using 
+	the exponential-lognormal regression model. |textit{Annals of Actuarial Science}, 1–30.
+	
+	\bibitem{}Wang, Yinzhi, Ingrid Hobæk Haff, and Arne Huseby. (2020). Modelling extreme claims via composite 
+	models and threshold selection methods. \textit{Insurance: Mathematics and Economics} 91, 257–268.
+\end{thebibliography}{} 
+\end{document}
